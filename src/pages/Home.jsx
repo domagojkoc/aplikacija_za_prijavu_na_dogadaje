@@ -21,6 +21,18 @@ export default function Home(props) {
       }
     }
   }
+  
+  async function deleteEvents(eventId) {
+    const { error } = await supabase
+        .from("event")
+        .delete()
+        .eq("id", eventId);
+    if (error) {
+        alert("Operacija nije uspjela.");
+    } else {
+        await loadEvents();
+    }
+}
 
   return (
     <>
@@ -33,6 +45,8 @@ export default function Home(props) {
             <div class="place-self-start text-xl">{item.name}</div>
             <div class="place-self-start line-clamp-3">{item.description}</div>
             <div class="place-self-start line-clamp-3">{item.date}</div>
+            <button class="bg-blue-500 text-white p-2 rounded text-sm" onClick={() => deleteEvents(item.id)}>Izbriši</button>
+            <button class="bg-green-500 text-white p-2 rounded text-sm" onClick={() => Project(item.id)}>Detalji</button>
           </div>}
         </For>
       </Show>
