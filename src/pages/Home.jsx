@@ -1,8 +1,10 @@
 import { createEffect, createSignal, Show, For } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { useAuth } from "../components/AuthProvider";
 import { supabase } from "../services/supabase";
 
 export default function Home(props) {
+  const navigate = useNavigate();
   const session = useAuth();
 
   const [events, setEvents] = createSignal(null);
@@ -21,18 +23,21 @@ export default function Home(props) {
       }
     }
   }
-  
-  async function deleteEvents(eventId) {
+
+  async function deleteEvents(id) {
     const { error } = await supabase
-        .from("event")
-        .delete()
-        .eq("id", eventId);
+      .from("event")
+      .delete()
+      .eq("id", id);
     if (error) {
-        alert("Operacija nije uspjela.");
-    } else {
-        await loadEvents();
+      alert("Operacija nije uspjela.");
+      console.log(error);
     }
-}
+  }
+
+  const handleClickDetails = (item) => {
+    navigate(`/event/${item.id}`);
+  }
 
   return (
     <>
@@ -41,12 +46,12 @@ export default function Home(props) {
       </Show>
       <Show when={session() && events()}>
         <For each={events()} fallback={<div>Nema događaja.</div>}>
-          {(item) => <div class="flex flex-col gap-2 items-end bg-blue-400 text-white p-2 rounded mb-5">
-            <div class="place-self-start text-xl">{item.name}</div>
+          {(item) => <div class="flex flex-col gap-2 items-end bg-base-200 text-white p-2 rounded mb-5">
+            <div class="text-blue-600 place-self-start text-xl">{item.name}</div>
             <div class="place-self-start line-clamp-3">{item.description}</div>
             <div class="place-self-start line-clamp-3">{item.date}</div>
-            <button class="bg-blue-500 text-white p-2 rounded text-sm" onClick={() => deleteEvents(item.id)}>Izbriši</button>
-            <button class="bg-green-500 text-white p-2 rounded text-sm" onClick={() => Project(item.id)}>Detalji</button>
+            <button class="bg-blue-500 text-white p-2 rounded text-sm" onClick={() => deleteEvents(item)}>Izbriši</button>
+            <button class="bg-green-500 text-white p-2 rounded text-sm" onClick={() => handleClickDetails(item)}>Detalji</button>
           </div>}
         </For>
       </Show>

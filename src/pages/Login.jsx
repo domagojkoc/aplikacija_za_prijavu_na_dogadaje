@@ -12,7 +12,7 @@ export default function Login(props) {
       password: password(),
     });
     if (error) setError("Neuspješna prijava. Provjerite podatke.");
-    else window.location.href = "/Home";
+    else window.location.href = "/";
   };
 
   return (

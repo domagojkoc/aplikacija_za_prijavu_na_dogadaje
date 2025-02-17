@@ -1,62 +1,48 @@
-import { createSignal, createResource } from "solid-js";
-import { useParams } from "solid-app-router";
 import { supabase } from "../services/supabase";
+import { createEffect, createSignal, Show, For } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+import { useAuth } from "../components/AuthProvider.jsx";
 
 export default function EventDetails(props) {
-  const { id } = useParams(); 
-  const [event, setEvent] = createSignal(null);
-  const [registered, setRegistered] = createSignal(false);
+  const navigate = useNavigate();
+  const session = useAuth();
 
-  const fetchEvent = async () => {
-    const { data, error } = await supabase.from("events").select("*").eq("id", id).single();
-    if (error) console.error("Greška pri dohvaćanju događaja:", error);
-    else setEvent(data);
-  };
+  const [event, setEvent] = createSignal([]);
 
-  const checkRegistration = async () => {
-    const user = supabase.auth.user();
-    if (!user) return;
-    
-    const { data } = await supabase.from("registrations").select("*").eq("user_id", user.id).eq("event_id", id);
-    if (data.length > 0) setRegistered(true);
-  };
 
-  const handleRegister = async () => {
-    const user = supabase.auth.user();
-    if (!user) {
-      alert("Morate biti prijavljeni da biste se registrirali.");
-      return;
+  createEffect(async () => {
+    await loadEvent();
+  });
+
+  async function loadEvent() {
+    if (session()) {
+      const { data, error } = await supabase
+        .from("event")
+        .select("*")
+        .eq("id", props.params.id);
+      if (!error) {
+        setEvent(data);
+      }
     }
-
-    const { error } = await supabase.from("registrations").insert([{ user_id: user.id, event_id: id }]);
-    if (error) alert("Greška pri prijavi.");
-    else {
-      alert("Uspješno ste prijavljeni!");
-      setRegistered(true);
-    }
-  };
-
-  createResource(fetchEvent);
-  createResource(checkRegistration);
+  }
+  
+  const handleClick = (item) => {
+    navigate(`/Apply/${item.id}`);
+  }
 
   return (
-    <div className="p-6">
-      {event() ? (
-        <>
-          <h2 className="text-2xl font-bold">{event().name}</h2>
-          <p className="text-gray-700">{event().description}</p>
-          <p className="text-sm text-gray-500">{event().date}</p>
-          {!registered() ? (
-            <button className="bg-green-500 text-white p-2 rounded-lg mt-4" onClick={handleRegister}>
-              Prijavi se na događaj
-            </button>
-          ) : (
-            <p className="text-green-600 mt-4">Već ste prijavljeni na ovaj događaj.</p>
-          )}
-        </>
-      ) : (
-        <p>Učitavanje...</p>
-      )}
-    </div>
+    <>
+      <Show when={session() && event()}>
+        <For each={event()} fallback={<div>Nema događaja.</div>}>
+          {(item) => <div class="flex flex-col gap-2 items-end bg-base-300 text-white p-2 rounded mb-5">
+            <div class="text-blue-600 place-self-start text-2xl uppercase">{item.name}</div>
+            <div class="place-self-start line-clamp-3">{item.description}</div>
+            <div class="place-self-start line-clamp-3">{item.date}</div>
+            <button class="bg-blue-500 text-white p-2 rounded text-sm" onClick={() => deleteEvents(item)}>Izbriši</button>
+            <button class="bg-green-500 text-white p-2 rounded text-sm" onClick={() => handleClick(item)}>Prijava</button>
+          </div>}
+        </For>
+      </Show>
+    </>
   );
 }

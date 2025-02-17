@@ -3,22 +3,25 @@ import { AuthProvider, useAuth } from "./components/AuthProvider";
 import { Show } from "solid-js";
 
 import Home from "./pages/Home";
+import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import CreateEvent from "./pages/CreateEvent";
+import EventDetails from "./pages/EventDetails";
 import Apply from "./pages/Apply";
-import Register from "./pages/Register";
 
 export default function App() {
   return (
     <AuthProvider>
       <Router root={Layout}>
+        <Route path="/" component={Home} />
         <Route path="/Home" component={Home} />
         <Route path="/Register" component={Register} />
         <Route path="/Login" component={Login} />
         <Route path="/Logout" component={Logout} />
         <Route path="/CreateEvent" component={CreateEvent} />
-        <Route path="/Apply" component={Apply} />
+        <Route path="/event/:id" component={EventDetails} />
+        <Route path="/apply/:id" component={Apply} />
       </Router>
     </AuthProvider>
   );
