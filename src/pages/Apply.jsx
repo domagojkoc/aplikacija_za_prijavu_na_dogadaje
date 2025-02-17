@@ -3,10 +3,10 @@ import { supabase } from "../services/supabase";
 import { useAuth } from "../components/AuthProvider.jsx";
 
 export default function Apply(props) {
+  //Test
   const session = useAuth();
 
   const [registrations, setRegistrations] = createSignal([]);
-
     createEffect(async () => {
       await loadRegistrations();
     });
