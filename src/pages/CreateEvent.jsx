@@ -27,7 +27,7 @@ export default function CreateEvent(props) {
 
     if (error) {
       console.error("Error during insert:", error);
-      alert("Spremanje nije uspjelo.");
+      alert("Kreiranje nije uspjelo.");
     } else {
       setSuccess(true);
       event.target.reset();
@@ -37,18 +37,18 @@ export default function CreateEvent(props) {
   return (
     <>
       <Show when={success()}>
-        <div class="bg-green-400 text-white p-2 rounded my-5">
-          Događaj uspješno spremljen!
+        <div class="bg-green-400 text-white p-3 rounded-lg mb-4 text-center">
+          Događaj uspješno kreiran!
         </div>
       </Show>
       <form onSubmit={formSubmit}>
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-4">Novi događaj</h2>
-          <input type="text" name="name" placeholder="Naziv" className="border p-2 mb-2 w-full" />
-          <textarea placeholder="Opis" name="description" className="border p-2 mb-2 w-full" />
-          <input type="date" name="date" className="border p-2 mb-2 w-full" />
+        <div className="bg-gray-800 p-6 rounded-lg shadow-xl "  >
+          <h2 className="text-2xl font-bold mb-4 text-center">Novi događaj</h2>
+          <input type="text" name="name" placeholder="Naziv" className="border p-2 mb-2 w-full rounded-lg shadow-md" />
+          <textarea placeholder="Opis" name="description" className="border p-2 mb-2 w-full rounded-lg shadow-md" />
+          <input type="date" name="date" className="border p-2 mb-2 w-full rounded-lg shadow-md" />
           <div class="p-2 flex flex-col gap-1">
-            <input type="submit" value="Pošalji" class="bg-slate-600 text-white p-2 rounded" />
+            <input type="submit" value="Kreiraj" class="bg-blue-500 text-white p-2 rounded-lg cursor-pointer hover:bg-blue-600 transition" />
           </div>
         </div>
       </form >

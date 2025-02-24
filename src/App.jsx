@@ -30,27 +30,26 @@ export default function App() {
 function Layout(props) {
   const appName = import.meta.env.VITE_APP_NAME;
   const session = useAuth();
-  console.log(session())
   return (
     <>
-    <div class="navbar bg-base-100 shadow-md p-4">
-      <div class="flex-1">
-        <A href="/Home" class="text-xl font-bold">📅 Događaji</A>
+      <div class="navbar bg-gradient-to-r from-blue-700 via-purple-500 to-purple-700 text-white shadow-md p-4 rounded-xl">
+        <div class="flex-1">
+          <A href="/Home" class="text-xl font-bold text-white hover:text-blue-300" style="margin-left: 15px">📅 Događaji</A>
+        </div>
+        <div class="flex-none">
+          <Show when={session()}>
+            <A href="/CreateEvent" class="btn bg-blue-600 hover:bg-blue-700 text-white border-0">+ Novi događaj</A>
+            <A href="/Logout" class="btn bg-blue-600 hover:bg-blue-700 text-white border-0 ml-2" style="margin-right: 15px">Odjava</A>
+          </Show>
+          <Show when={!session()}>
+            <A href="/Login" class="btn bg-blue-600 hover:bg-blue-800 text-white border-0">Prijava</A>
+            <A href="/Register" class="btn bg-blue-600 hover:bg-blue-800 text-white border-0 ml-2" style="margin-right: 15px">Registracija</A>
+          </Show>
+        </div>
       </div>
-      <div class="flex-none">
-        <Show when={session()}>
-          <A href="/CreateEvent" class="btn btn-primary">+ Novi događaj</A>
-          <A href="/Logout" class="btn btn-outline ml-2">Odjava</A>
-        </Show>
-        <Show when={!session()}>
-          <A href="/Login" class="btn btn-secondary">Prijava</A>
-          <A href="/Register" class="btn btn-outline ml-2">Registracija</A>
-        </Show>
-      </div>
-    </div>
-    <div class="container mx-auto p-6">
+      <div class="container mx-auto p-6">
         {props.children}
-    </div>
-  </>
+      </div>
+    </>
   );
 }

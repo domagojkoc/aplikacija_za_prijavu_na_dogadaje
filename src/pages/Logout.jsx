@@ -17,7 +17,7 @@ export default function Logout(props) {
     return (
         <>
             <Show when={result()}>
-                <div class="bg-slate-300 p-4 rounded">
+                <div class="bg-green-500 p-4 rounded">
                     {result()}
                 </div>
             </Show>
