@@ -28,22 +28,36 @@ export default function App() {
 }
 
 function Layout(props) {
-  const appName = import.meta.env.VITE_APP_NAME;
-  const session = useAuth();
+  const appName = import.meta.env.VITE_APP_NAME || "Aplikacija za prijavu na događaje";
+  const { user } = useAuth();
+
   return (
     <>
       <div class="navbar bg-gradient-to-r from-blue-700 via-purple-500 to-purple-700 text-white shadow-md p-4 rounded-xl">
         <div class="flex-1">
-          <A href="/Home" class="text-xl font-bold text-white hover:text-blue-300" style="margin-left: 15px">📅 Događaji</A>
+          <A href="/Home" class="text-xl font-bold text-white hover:text-blue-300" style="margin-left: 15px">
+            📅 Događaji
+          </A>
         </div>
-        <div class="flex-none">
-          <Show when={session()}>
-            <A href="/CreateEvent" class="btn bg-blue-600 hover:bg-blue-700 text-white border-0">+ Novi događaj</A>
-            <A href="/Logout" class="btn bg-blue-600 hover:bg-blue-700 text-white border-0 ml-2" style="margin-right: 15px">Odjava</A>
+        <div class="flex-none flex items-center gap-2">
+          <Show when={user}>
+            <span class="mr-2 text-white/80 text-sm">
+              Prijavljeni korisnik: {user.email}
+            </span>
+            <A href="/CreateEvent" class="btn bg-blue-600 hover:bg-blue-700 text-white border-0">
+              + Novi događaj
+            </A>
+            <A href="/Logout" class="btn bg-blue-600 hover:bg-blue-700 text-white border-0 ml-2" style="margin-right: 15px">
+              Odjava
+            </A>
           </Show>
-          <Show when={!session()}>
-            <A href="/Login" class="btn bg-blue-600 hover:bg-blue-800 text-white border-0">Prijava</A>
-            <A href="/Register" class="btn bg-blue-600 hover:bg-blue-800 text-white border-0 ml-2" style="margin-right: 15px">Registracija</A>
+          <Show when={!user}>
+            <A href="/Login" class="btn bg-blue-600 hover:bg-blue-800 text-white border-0">
+              Prijava
+            </A>
+            <A href="/Register" class="btn bg-blue-600 hover:bg-blue-800 text-white border-0 ml-2" style="margin-right: 15px">
+              Registracija
+            </A>
           </Show>
         </div>
       </div>

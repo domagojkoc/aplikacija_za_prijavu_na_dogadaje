@@ -1,6 +1,5 @@
-import { createContext, createSignal, useContext, Show } from "solid-js";
-import { supabase } from "../services/supabase";
-
+import { createContext, createSignal, useContext, onMount } from "solid-js";
+import { pb } from "../services/pocketbase";
 
 const AuthContext = createContext();
 
@@ -9,24 +8,52 @@ export function useAuth() {
 }
 
 export function AuthProvider(props) {
-    const [session, setSession] = createSignal(null);
+    const [user, setUser] = createSignal(pb.authStore.model);
     const [loading, setLoading] = createSignal(true);
 
-    supabase.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-            setSession(session);
-            setLoading(false);
-        } else if (event === "SIGNED_OUT") {
-            setSession(null);
-            setLoading(false);
-        } else if (event === "INITIAL_SESSION") {
-            setLoading(false);
+    const authActions = {
+        login: async (email, password) => {
+            try {
+                await pb.collection('users').authWithPassword(email, password);
+                setUser(pb.authStore.model);
+                return true;
+            } catch (err) {
+                console.error("Login error:", err);
+                return false;
+            }
+        },
+        register: async (email, password) => {
+            try {
+                await pb.collection('users').create({
+                    email,
+                    password,
+                    passwordConfirm: password
+                });
+                return true;
+            } catch (err) {
+                console.error("Registration error:", err);
+                return false;
+            }
+        },
+        logout: () => {
+            pb.authStore.clear();
+            setUser(null);
         }
+    };
+
+    onMount(() => {
+        // Postavi početno stanje
+        setLoading(false);
+        
+        // Osluškuj promjene autentikacije
+        pb.authStore.onChange((token, model) => {
+            setUser(model);
+        });
     });
 
     return (
-        <Show when={!loading()}>
-            <AuthContext.Provider value={session}>{props.children}</AuthContext.Provider>
-        </Show>
+        <AuthContext.Provider value={{ user: user(), loading: loading(), ...authActions }}>
+            {props.children}
+        </AuthContext.Provider>
     );
 }
