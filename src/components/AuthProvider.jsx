@@ -40,9 +40,7 @@ export function AuthProvider(props) {
             setUser(null);
         }
     };
-
     onMount(() => {
-        // Postavi početno stanje
         setLoading(false);
         
         // Osluškuj promjene autentikacije
