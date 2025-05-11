@@ -31,7 +31,6 @@ export default function EventDetails(props) {
     if (!pb.authStore.isValid || event().creator !== pb.authStore.model.id) return;
 
     try {
-      // Obriši sve prijave za ovaj događaj
       await pb.collection("registrations").getFullList({
         filter: `event = "${event().id}"`
       }).then((records) => {
@@ -39,8 +38,7 @@ export default function EventDetails(props) {
           await pb.collection("registrations").delete(record.id);
         });
       });
-
-      // Obriši sam događaj
+      
       await pb.collection("events").delete(event().id);
       navigate("/");
     } catch (error) {

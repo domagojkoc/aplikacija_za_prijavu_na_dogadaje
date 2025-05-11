@@ -13,14 +13,12 @@ export default function Register(props) {
     const password = formData.get("password");
 
     try {
-      // Registracija korisnika
       await pb.collection('users').create({
         email,
         password,
         passwordConfirm: password
       });
       
-      // Automatska prijava nakon registracije
       await pb.collection('users').authWithPassword(email, password);
       
       setResult("Registracija uspješna! Preusmjeravanje...");

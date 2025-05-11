@@ -42,8 +42,7 @@ export function AuthProvider(props) {
     };
     onMount(() => {
         setLoading(false);
-        
-        // Osluškuj promjene autentikacije
+
         pb.authStore.onChange((token, model) => {
             setUser(model);
         });
