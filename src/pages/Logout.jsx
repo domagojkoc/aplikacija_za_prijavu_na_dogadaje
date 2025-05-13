@@ -8,6 +8,7 @@ export default function Logout(props) {
     try {
       pb.authStore.clear();
       setResult("Odjava je uspjela.");
+      window.location.reload();
     } catch (error) {
       setResult("Odjava nije uspjela!");
     }

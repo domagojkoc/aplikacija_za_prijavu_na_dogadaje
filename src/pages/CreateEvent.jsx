@@ -1,10 +1,12 @@
 import { createSignal, Show } from "solid-js";
 import { pb } from "../services/pocketbase";
 import { useAuth } from "../components/AuthProvider";
+import { useNavigate } from "@solidjs/router";
 
 export default function CreateEvent(props) {
   const { user } = useAuth();
   const [success, setSuccess] = createSignal(false);
+  const navigate = useNavigate();
 
   async function formSubmit(event) {
     setSuccess(false);
@@ -21,6 +23,8 @@ export default function CreateEvent(props) {
       
       setSuccess(true);
       event.target.reset();
+      navigate('/');
+
     } catch (error) {
       console.error("Greška pri kreiranju događaja:", error);
       alert("Kreiranje nije uspjelo: " + error.message);
